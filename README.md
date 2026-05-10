@@ -97,5 +97,4 @@ El archivo swagscord.sql incluye 39 productos de ejemplo con stock aleatorio.
 | :---: |
 |<img src="https://i.postimg.cc/nzBFHmZ0/kindpng-246018.png" width="220"> |
 
-</>
 
