@@ -90,8 +90,12 @@ El archivo swagscord.sql incluye 39 productos de ejemplo con stock aleatorio.
 
 ## Autor
 
+<div align="center">
+
 | Peti-sui -- Scoo |
 |       Kevin      |
 | :---: |
 |<img src="https://i.postimg.cc/nzBFHmZ0/kindpng-246018.png" width="220"> |
+
+</>
 
