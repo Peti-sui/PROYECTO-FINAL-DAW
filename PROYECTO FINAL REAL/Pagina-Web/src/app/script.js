@@ -1,4 +1,5 @@
 /* MENU HAMBURGUESA */
+/* Funcionalidad para abrir y cerrar el menu en dispositivos moviles */
 document.addEventListener("DOMContentLoaded", function () {
   const hamburgerBtn = document.getElementById("hamburgerBtn");
   const navMenu = document.getElementById("navMenu");
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   /* CARROUSEL INICIO */
+  /* Carrusel de la seccion de accesorios en la pagina principal */
   const slider1 = new Splide("#miSlider1", {
     type: "fade",
     autoplay: true,
@@ -39,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
   slider1.mount();
   slider1.Components.Autoplay.play();
 
+  /* Carrusel de la seccion de ropa en la pagina principal */
   const slider2 = new Splide("#miSlider2", {
     type: "fade",
     autoplay: true,
@@ -54,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* AGRANDAR TARJETAS DE PRODUCTO */
+/* Efecto de agrandamiento al hacer clic en las tarjetas de producto */
 document.querySelectorAll(".tarjeta-prodcuto").forEach(function (tarjeta) {
   tarjeta.addEventListener("click", function () {
     this.classList.toggle("agrandada");

@@ -1,15 +1,19 @@
 <?php
+/* Incluir la configuracion de la base de datos para gestionar las sesiones */
 require_once '../includes/config.php';
 
+/* Procesar el formulario cuando se envia mediante POST */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = $_POST['usuario'] ?? '';
     $password = $_POST['password'] ?? '';
 
+    /* Preparar y ejecutar la consulta para verificar las credenciales del administrador */
     $stmt = $conn->prepare("SELECT * FROM admin WHERE usuario = ? AND password = ?");
     $stmt->bind_param("ss", $usuario, $password);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    /* Si las credenciales son correctas, iniciar sesion y redirigir al panel */
     if ($result->num_rows === 1) {
         $_SESSION['admin_logueado'] = true;
         $_SESSION['admin_usuario'] = $usuario;
@@ -36,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-card">
             <h2>SWAGSCORD<br><span style="font-size: 18px;">Panel Administración</span></h2>
+            <!-- Mostrar mensaje de error si las credenciales son incorrectas -->
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>

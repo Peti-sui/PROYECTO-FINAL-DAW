@@ -1,9 +1,12 @@
 <?php
+/* Incluir la configuracion y las funciones auxiliares */
 require_once 'includes/config.php';
 require_once 'includes/funciones.php';
 
+/* ID de la categoria Ropa */
 $categoria_id = 1;
 
+/* Obtener todos los productos de la categoria Ropa ordenados por ID descendente */
 $resultado = $conn->query("SELECT * FROM productos WHERE categoria_id = $categoria_id ORDER BY id DESC");
 $productos = $resultado;
 ?>
@@ -45,6 +48,7 @@ $productos = $resultado;
     </ul>
   </header>
 
+  <!-- Boton flotante de WhatsApp -->
   <a href="https://wa.me/34600123456" target="_blank"
     style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
     <img class="wasa" src="./img/wasa.png" style="width: 50px; height: 50px; transition: transform 0.3s;">
@@ -54,7 +58,7 @@ $productos = $resultado;
   <main class="text-white">
     <div class="sec-ropa">
 
-      <!--     SI NO, NO HAY CARROUSEL -->
+      <!-- Inicializacion de los carruseles Splide para las tarjetas de producto -->
       <script>
         (function () {
           function initCarousels() {
@@ -87,11 +91,13 @@ $productos = $resultado;
       </script>
 
       <div class="d-flex flex-wrap justify-content-center gap-4 p-4">
+        /* Recorrer cada producto y generar una tarjeta por cada uno */
         <?php while ($producto = $productos->fetch_assoc()):
           $imagenes = obtenerImagenesDeCarpeta($producto['carpeta_imagenes']);
           ?>
           <div class="tarjeta-prodcuto card text-center" style="width: 288px;">
 
+            <!-- Carrusel del producto con todas sus imagenes -->
             <div class="splide splide-producto" id="splide<?php echo $producto['id']; ?>">
               <div class="splide__track">
                 <ul class="splide__list">
@@ -127,6 +133,7 @@ $productos = $resultado;
       </div>
     </div>
 
+    <!-- Seccion del footer superior con enlaces legales -->
     <div class="sec-4">
       <div
         class="contenedor-footer-arriba container-fluid align-items-center justify-content-center text-center position-absolute">

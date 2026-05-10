@@ -1,19 +1,23 @@
 <?php
-
+/* Activar la visualizacion de errores para facilitar la depuracion */
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+/* Incluir los archivos necesarios para la configuracion y las funciones */
 require_once '../includes/config.php';
 require_once '../includes/funciones.php';
 
+/* Verificar que el usuario haya iniciado sesion como administrador */
 if (!isset($_SESSION['admin_logueado'])) {
     header('Location: login.php');
     exit();
 }
 
+/* Obtener todas las categorias disponibles para el selector del formulario */
 $categorias = $conn->query("SELECT * FROM categorias");
 $mensaje = '';
 
+/* Procesar el formulario de creacion de producto */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
@@ -21,37 +25,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria_id = $_POST['categoria_id'];
     $stock = $_POST['stock'];
 
+    /* Crear una carpeta unica para las imagenes del nuevo producto */
     $carpeta_unica = '../uploads/' . uniqid() . '/';
     mkdir($carpeta_unica, 0777, true);
 
+    /* Ruta relativa para almacenar en la base de datos */
     $carpeta_bd = 'uploads/' . basename($carpeta_unica) . '/';
 
+    /* Extensiones de imagen permitidas */
     $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'];
     $errores_archivos = [];
 
+    /* Subir las imagenes seleccionadas a la carpeta creada */
     if (isset($_FILES['imagenes']) && !empty($_FILES['imagenes']['name'][0])) {
         foreach ($_FILES['imagenes']['tmp_name'] as $key => $tmp_name) {
             $nombre_archivo = $_FILES['imagenes']['name'][$key];
             $extension = strtolower(pathinfo($nombre_archivo, PATHINFO_EXTENSION));
 
+            /* Validar la extension del archivo */
             if (!in_array($extension, $extensiones_permitidas)) {
                 $errores_archivos[] = $nombre_archivo;
                 continue;
             }
 
+            /* Mover el archivo subido a la carpeta del producto */
             if ($_FILES['imagenes']['error'][$key] === 0) {
                 move_uploaded_file($tmp_name, $carpeta_unica . $nombre_archivo);
             }
         }
     }
 
+    /* Mostrar alerta si hay archivos no permitidos */
     if (!empty($errores_archivos)) {
         echo '<script>alert("Archivos no permitidos: ' . implode(", ", $errores_archivos) . '");</script>';
     } else {
+        /* Insertar el producto en la base de datos */
         $stmt = $conn->prepare("INSERT INTO productos (nombre, descripcion, precio, carpeta_imagenes, categoria_id, stock) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssdsii", $nombre, $descripcion, $precio, $carpeta_bd, $categoria_id, $stock);
 
         if ($stmt->execute()) {
+            /* Redirigir al panel principal si la operacion fue exitosa */
             header('Location: index.php?creado=1');
             exit();
         } else {

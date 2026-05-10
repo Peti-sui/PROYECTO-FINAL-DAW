@@ -1,24 +1,29 @@
 <?php
-
+/* Activar la visualizacion de errores para facilitar la depuracion */
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+/* Incluir los archivos necesarios para la configuracion y las funciones */
 require_once '../includes/config.php';
 require_once '../includes/funciones.php';
 
+/* Verificar que el usuario haya iniciado sesion como administrador */
 if (!isset($_SESSION['admin_logueado'])) {
     header('Location: login.php');
     exit();
 }
 
+/* Obtener el ID del producto a editar desde la URL */
 $id = $_GET['id'] ?? 0;
 $producto = $conn->query("SELECT * FROM productos WHERE id = $id")->fetch_assoc();
 
+/* Si el producto no existe, redirigir al panel principal */
 if (!$producto) {
     header('Location: index.php');
     exit();
 }
 
+/* Procesar el formulario de edicion */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
@@ -28,12 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $carpeta = $producto['carpeta_imagenes'];
 
+    /* Extensiones de imagen permitidas */
     $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'];
     $errores_archivos = [];
 
+    /* Subir nuevas imagenes si se han seleccionado */
     if (isset($_FILES['imagenes']) && !empty($_FILES['imagenes']['name'][0])) {
         $ruta_fisica = '../' . $carpeta;
 
+        /* Crear la carpeta si no existe */
         if (!is_dir($ruta_fisica)) {
             mkdir($ruta_fisica, 0777, true);
         }
@@ -42,11 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre_archivo = $_FILES['imagenes']['name'][$key];
             $extension = strtolower(pathinfo($nombre_archivo, PATHINFO_EXTENSION));
 
+            /* Validar la extension del archivo */
             if (!in_array($extension, $extensiones_permitidas)) {
                 $errores_archivos[] = $nombre_archivo;
                 continue;
             }
 
+            /* Prevenir sobrescritura de archivos añadiendo un contador */
             if ($_FILES['imagenes']['error'][$key] === 0) {
                 $nombre_final = $nombre_archivo;
                 $contador = 1;
@@ -59,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    /* Eliminar todas las imagenes si el usuario ha marcado el checkbox */
     if (isset($_POST['eliminar_imagenes'])) {
         $ruta_fisica = '../' . $carpeta;
         if (is_dir($ruta_fisica)) {
@@ -70,18 +81,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    /* Mostrar alerta si hay archivos no permitidos */
     if (!empty($errores_archivos)) {
         echo '<script>alert("Archivos no permitidos: ' . implode(", ", $errores_archivos) . '");</script>';
     } else {
+        /* Actualizar los datos del producto en la base de datos */
         $stmt = $conn->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, categoria_id=?, stock=? WHERE id=?");
         $stmt->bind_param("ssdiii", $nombre, $descripcion, $precio, $categoria_id, $stock, $id);
         $stmt->execute();
 
+        /* Redirigir al panel principal */
         header('Location: index.php');
         exit();
     }
 }
 
+/* Obtener las categorias para el selector del formulario */
 $categorias = $conn->query("SELECT * FROM categorias");
 $carpeta_fisica = $producto['carpeta_imagenes'];
 $archivos_fisicos = glob($carpeta_fisica . "*.{jpg,jpeg,png,gif,webp,avif}", GLOB_BRACE);
@@ -174,6 +189,7 @@ $archivos_fisicos = glob($carpeta_fisica . "*.{jpg,jpeg,png,gif,webp,avif}", GLO
                 <div class="card bg-dark text-white p-4 text-center">
                     <h5>Imágenes Actuales</h5>
                     <?php
+                    /* Mostrar todas las imagenes actuales del producto */
                     $carpeta_fisica = $producto['carpeta_imagenes'];
                     $ruta_completa = '../' . $carpeta_fisica;
 

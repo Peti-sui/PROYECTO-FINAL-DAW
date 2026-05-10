@@ -1,13 +1,16 @@
 <?php
+/* Incluir la configuracion y las funciones auxiliares */
 require_once 'includes/config.php';
 require_once 'includes/funciones.php';
 
+/* Obtener los productos de la categoria Accesorios para el carrusel */
 $accesorios = $conn->query("
     SELECT * FROM productos 
     WHERE categoria_id = 2 
     ORDER BY id DESC
 ");
 
+/* Obtener los productos de la categoria Ropa para el carrusel */
 $ropa = $conn->query("
     SELECT * FROM productos 
     WHERE categoria_id = 1 
@@ -52,6 +55,7 @@ $ropa = $conn->query("
     </ul>
   </header>
 
+  <!-- Boton flotante de WhatsApp -->
   <a href="https://wa.me/34600123456" target="_blank"
     style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
     <img class="wasa" src="./img/wasa.png" style="width: 50px; height: 50px; transition: transform 0.3s;">
@@ -60,6 +64,7 @@ $ropa = $conn->query("
   <main class="text-white">
     <div class="sec-1 container text-center">
       <div class="fila-carrouseles-inicio row">
+        <!-- Carrusel de accesorios -->
         <div class="columna1-carrousel-inicio col-md-12 col-lg-6">
           <div class="card position-relative">
             <img class="papel-roto-carrousel-inicio position-absolute top-50 start-50 translate-middle"
@@ -71,6 +76,7 @@ $ropa = $conn->query("
                   <div class="splide__track">
                     <ul class="splide__list">
                       <?php
+                      /* Mostrar la primera imagen de cada producto de accesorios en el carrusel */
                       if ($accesorios && $accesorios->num_rows > 0):
                         while ($producto = $accesorios->fetch_assoc()):
                           $imagen = obtenerPrimeraImagen($producto['carpeta_imagenes']);
@@ -96,6 +102,7 @@ $ropa = $conn->query("
 
         <div class="separacion1"></div>
 
+        <!-- Carrusel de ropa -->
         <div class="columna2-carrousel-inicio col-md-12 col-lg-6">
           <div class="card position-relative">
             <img class="papel-roto-carrousel-inicio position-absolute top-50 start-50 translate-middle"
@@ -107,6 +114,7 @@ $ropa = $conn->query("
                   <div class="splide__track">
                     <ul class="splide__list">
                       <?php
+                      /* Mostrar la primera imagen de cada producto de ropa en el carrusel */
                       if ($ropa && $ropa->num_rows > 0):
                         while ($producto = $ropa->fetch_assoc()):
                           $imagen = obtenerPrimeraImagen($producto['carpeta_imagenes']);
@@ -143,6 +151,7 @@ $ropa = $conn->query("
       </div>
     </div>
 
+    <!-- Seccion de informacion sobre la tienda -->
     <div class="sec-3">
 
       <div class="d-flex justify-content-center align-items-center">
@@ -163,6 +172,7 @@ $ropa = $conn->query("
       </div>
     </div>
 
+    <!-- Seccion de compromiso sostenible con Caritas -->
     <div class="sec-sostenibilidad">
       <div class="d-flex justify-content-center align-items-center">
         <div class="sobre-swagscord text-center" style=" margin-top: 0px; ">
@@ -178,6 +188,7 @@ $ropa = $conn->query("
       </div>
     </div>
 
+    <!-- Seccion del footer superior con enlaces legales -->
     <div class="sec-4">
       <div
         class="contenedor-footer-arriba container-fluid align-items-center justify-content-center text-center position-absolute">
