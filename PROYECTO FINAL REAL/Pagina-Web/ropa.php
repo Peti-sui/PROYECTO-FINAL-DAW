@@ -91,8 +91,9 @@ $productos = $resultado;
       </script>
 
       <div class="d-flex flex-wrap justify-content-center gap-4 p-4">
+        <?php
         /* Recorrer cada producto y generar una tarjeta por cada uno */
-        <?php while ($producto = $productos->fetch_assoc()):
+        while ($producto = $productos->fetch_assoc()):
           $imagenes = obtenerImagenesDeCarpeta($producto['carpeta_imagenes']);
           ?>
           <div class="tarjeta-prodcuto card text-center" style="width: 288px;">
